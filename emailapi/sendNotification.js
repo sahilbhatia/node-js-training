@@ -4,17 +4,16 @@ const nodeMailer = require('nodemailer');
 const mailSender = require('./mailsend.js');
 
 router.get('/', function(req, res){
-
-	var mailOptions = {
+var mailOptions = {
 	from: 'onkarhasabe1@gmail.com',
 	to: 'onkarhasabe30@gmail.com',
 	subject: 'reguaring assignment status',
 	text: `assignment done successfully`
 	};
 
-	mailsender.senderFunction(mailOptions);
+mailsender.senderFunction(mailOptions);
 
-	res.json(mailOptions);
+res.json(mailOptions);
 });
 
 module.exports = router;

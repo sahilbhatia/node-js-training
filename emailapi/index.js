@@ -1,6 +1,5 @@
 const express = require('express');
 const app = express();
-
 const notificationFile= require('./sendNotification.js');
 
 app.use('/email', notificationFile);
