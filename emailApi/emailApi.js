@@ -7,11 +7,13 @@ router.get('/',function(req,res){
 });
 
 router.post('/page',function(req,res){
-	var from = 'jitendrasbunde@gmail.com';
-	var to = 'sunil.sonawane@joshsoftware.com,jitendrasbunde@gmail.com';
-	var sub = 'Email API test';
-	var text = 'Node Mail API Testing mail By Jitendra';
- email.mailSend(from,to,sub,text);
+	var obj = {
+		from :'jitendrasbunde@gmail.com',
+		to :'sunil.sonawane@joshsoftware.com,jitendrasbunde@gmail.com',
+		subject  :'Email API test',
+	 	text :'Node Mail API Testing mail By Jitendra'
+  }
+ email.mailSend(obj);
  res.json({'url':'post  call in emailApi.js'});
 });
-module.exports = router; 
+module.exports = router;
