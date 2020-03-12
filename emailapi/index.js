@@ -1,9 +1,10 @@
-var express = require('express');
-var app = express();
+const express = require('express');
+const app = express();
 
-var notification= require('./sendnotification.js');
+const notificationFile= require('./sendNotification.js');
 
-app.use('/email', notification);
+app.use('/email', notificationFile);
 
 app.listen(3000);
 console.log('server at 3000');
+
