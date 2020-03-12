@@ -1,6 +1,6 @@
 exports.helpmail = (from1, to1, subject1, text1) => {
 
-	var mailhelper = require('nodemailer');
+	const mailhelper = require('nodemailer');
 
 	var smail = mailhelper.createTransport({
 		service: 'gmail',

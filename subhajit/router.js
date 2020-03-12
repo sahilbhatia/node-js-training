@@ -1,6 +1,6 @@
-var exp = require('express');
+const exp = require('express');
 
-var router = exp.Router();
+const router = exp.Router();
 var mail = require('./email');
 
 

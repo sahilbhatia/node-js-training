@@ -1,6 +1,6 @@
-var express = require('express');
+const express = require('express');
 
-var app = express();
+const app = express();
 var mail = require('./router');
 app.use('/email', mail);
 app.listen(3002, function () {
