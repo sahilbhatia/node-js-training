@@ -11,7 +11,7 @@ var transporter = nodemailer.createTransport({
 var mailOptions = {
   from: 'anu.lazy123@gmail.com',
   to: 'anu.lazy123@gmail.com',
-  cc: 'anuja.joshi@joshsoftware.com,sunil.sonawane@joshsoftware.com ',
+  cc: 'anuja.joshi@joshsoftware.com',
   subject: 'Sending Email using Node.js',
   text: 'Thanks for the training!'
 };
@@ -30,4 +30,4 @@ var methods = {
                 }
 }
 
-exports.data = methods;
+module.exports = methods;
