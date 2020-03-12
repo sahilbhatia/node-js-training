@@ -13,7 +13,7 @@ router.use(email_sender);
 function email_sender(req,res) {
   var mail_obj = {
     from :'vitkarmanish21@gmail.com',
-    to :'onkarhasabe1@gmail.com,sunil.sonawane@joshsoftware.com,',
+    to :'onkarhasabe1@gmail.com',
     subject: 'Hello test mail',
     text: 'please reply if you get the mail'
 
