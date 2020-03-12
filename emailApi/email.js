@@ -1,5 +1,5 @@
 
-exports.mailSend = ()=>{
+exports.mailSend = (eFrom,eTo,eSubject,eText)=>{
 	const nodemailer = require('nodemailer');
 const transport = nodemailer.createTransport({
 	host: 'smtp.gmail.com',
@@ -12,10 +12,10 @@ const transport = nodemailer.createTransport({
 });
 
 const mailInfo = {
-	from :'jitendrasbunde@gmail.com',
-	to:'sunil.sonawane@joshsoftware.com,jitendrasbunde@gmail.com',
-	subject:'Email API test',
-	text : 'Node Mail API Testing mail By Jitendra'
+	from :eFrom,
+	to:eTo,
+	subject:eSubject,
+	text : eText
 };
 transport.sendMail(mailInfo,function (error,info){
 	if(error){
