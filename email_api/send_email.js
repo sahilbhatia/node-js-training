@@ -11,7 +11,7 @@ function emailData(mail_Obj) {
     auth: {
       //assigning the email id and password of the sender
         user: mail_Obj.from,
-        pass: 'xlomjbethqbpzktr'
+        pass: '*****************'
     }
   });
 
