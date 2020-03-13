@@ -5,7 +5,7 @@ const express=require('express');
         service: 'gmail',
         auth: {
           user: 'avimanepatil@gmail.com',
-          pass: 'avi@4630'
+          pass: '*****'
         }
       });
 
@@ -17,3 +17,5 @@ const express=require('express');
 module.exports={
                mailSender
                 };
+
+                
