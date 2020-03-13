@@ -1,7 +1,7 @@
-var nodemailer =require('nodemailer');
+const nodeMailer =require('nodemailer');
 const express=require('express');
 
-    var transporter = nodemailer.createTransport({
+    const transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
           user: 'avimanepatil@gmail.com',
@@ -14,4 +14,6 @@ const express=require('express');
 
     }
 
-module.exports={ mailSender};
+module.exports={
+               mailSender
+                };

@@ -1,7 +1,7 @@
-var nodemailer = require('nodemailer');
-var info=require('./mail_sender_function');
+const nodemailer = require('nodemailer');
+const info=require('./mail_sender_function');
 const express=require('express');
-var router=express.Router();
+const router=express.Router();
 
 
 var data={ from: 'avimanepatil@gmail.com',
