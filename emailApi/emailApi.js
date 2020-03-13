@@ -6,7 +6,7 @@ router.get('/',function(req,res){
 	res.json({'url':'default get call in emailApi.js'});
 });
 
-router.post('/page',function(req,res){
+router.post('/send',function(req,res){
 	var obj = {
 		from :'jitendrasbunde@gmail.com',
 		to :'sunil.sonawane@joshsoftware.com,jitendrasbunde@gmail.com',
