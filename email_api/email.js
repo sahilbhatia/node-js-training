@@ -8,14 +8,13 @@ const sendEmail = require('./send_email');
 router.get('/credentials/:from/:to/:subject/:text',function(req,res,next)
 {
   console.log(`${req.params}`);
-  console.log(`${req.params.from}`);
+ // console.log(`${req.params.from}`);
 
   var mail_Obj = {
     from : req.params.from,
     to : req.params.to,
     subject : req.params.subject,
     text : req.params.text
-    
   }
   sendEmail.emailData(mail_Obj);
   res.json("mail has been sended via path parameter");
@@ -25,13 +24,11 @@ router.get('/credentials/:from/:to/:subject/:text',function(req,res,next)
 router.get('/credentials',function(req,res,next)
 {
   console.log(req.query);
-
   var mail_Obj = {
     from : req.query.from,
     to : req.query.to,
     subject : req.query.subject,
     text : req.query.text
-    
   }
   sendEmail.emailData(mail_Obj);
   res.json("mail has been sended via request parameter");
