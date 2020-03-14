@@ -1,29 +1,40 @@
 const express = require('express');
 const router = express.Router();
 nodeMailer = require('nodemailer');
-var sendEmail = require('./send_email');
+const sendEmail = require('./send_email');
 
-router.get('/',function(req,res,next)
+//Sending email using path parameters !!!
+//http://localhost:3003/email/credentials/vitkarmanish21@gmail.com/vitkarmanish21@gmail.com/Testing%20api/Did%20you%20receive%20email
+router.get('/credentials/:from/:to/:subject/:text',function(req,res,next)
 {
-  console.log("inside get request of email file");
-  next();
+  console.log(`${req.params}`);
+  console.log(`${req.params.from}`);
+
+  var mail_Obj = {
+    from : req.params.from,
+    to : req.params.to,
+    subject : req.params.subject,
+    text : req.params.text
+    
+  }
+  sendEmail.emailData(mail_Obj);
+  res.json("mail has been sended via path parameter");
 })
 
-router.use(email_Sender);
+//sending mail through request parameters!!!
+router.get('/credentials',function(req,res,next)
+{
+  console.log(req.query);
 
-function email_Sender(req,res) {
-
-  //json object consisting of the email credentials
   var mail_Obj = {
-    from :'vitkarmanish21@gmail.com',
-    to :'onkarhasabe1@gmail.com',
-    subject: 'Hello test mail',
-    text: 'please reply if you get the mail'
-
+    from : req.query.from,
+    to : req.query.to,
+    subject : req.query.subject,
+    text : req.query.text
+    
   }
-  //sending the json object to the function which send the mail !!
   sendEmail.emailData(mail_Obj);
-  res.json("email send succesfully");
-}
+  res.json("mail has been sended via request parameter");
+})
 
 module.exports = router;
