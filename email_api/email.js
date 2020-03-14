@@ -3,8 +3,7 @@ const router = express.Router();
 nodeMailer = require('nodemailer');
 var sendEmail = require('./send_email');
 
-router.get('/',function(req,res,next)
-{
+router.get('/',function(req,res,next){
   console.log("inside get request of email file");
   next();
 })

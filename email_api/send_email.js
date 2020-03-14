@@ -3,7 +3,6 @@ nodeMailer = require('nodemailer');
 
 //function to send the email
 function emailData(mail_Obj) {
-
   let transporter = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
