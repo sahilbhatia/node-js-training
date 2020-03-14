@@ -3,7 +3,6 @@ nodeMailer = require('nodemailer');
 
 //function to send the email
 function emailData(mail_Obj) {
-
   let transporter = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -28,7 +27,6 @@ function emailData(mail_Obj) {
       return console.log(error);
   }
   console.log('Message %s sent: %s', info.messageId, info.response);
-  
   });
 }
 module.exports = {emailData};
