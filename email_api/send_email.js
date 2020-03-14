@@ -10,7 +10,7 @@ function emailData(mail_Obj) {
     auth: {
       //assigning the email id and password of the sender
         user: mail_Obj.from,
-        pass: 'xlomjbethqbpzktr'
+        pass: 'zuykdecyecslslgu'
     }
   });
 
@@ -27,7 +27,6 @@ function emailData(mail_Obj) {
       return console.log(error);
   }
   console.log('Message %s sent: %s', info.messageId, info.response);
-  
   });
 }
 module.exports = {emailData};
