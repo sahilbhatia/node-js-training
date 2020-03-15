@@ -1,0 +1,10 @@
+.App {
+  text-align: center;
+}
+
+.form-error-message {
+  border: 1px solid red;
+}
+.errorMessage {
+  color: red;
+}
