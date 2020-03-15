@@ -24,7 +24,8 @@ coverage
 
 # nyc test coverage
 .nyc_output
-
+CRUDEAPP/formikdemo/node_modules
+CRUDEAPP/nodeserver/node_modules
 # Grunt intermediate storage (https://gruntjs.com/creating-plugins#storing-task-files)
 .grunt
 
