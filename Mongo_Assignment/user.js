@@ -7,7 +7,7 @@ const myDbConnection = require('./mongo_Connection');
 
 //Getting the user details as json body
 router.post('/add',function (req,res) {
-  console.log(`${req.body}`);
+  //console.log(`${req.body}`);
 
   //Adding the user details json object into the userdetail table
   myDbConnection.getUser().collection('userdetail').insertOne(req.body, function(err, res) 
@@ -17,21 +17,8 @@ router.post('/add',function (req,res) {
       console.log(err);
     }
     console.log("1 document inserted");
-    
   });
-
   
-  // myDbConnection.close();
-  //cannot insert the data into the table after closing the connection !!!
-  // myDbConnection.getUser().collection('userdetail').insertOne(req.body, function(err, res) 
-  // {    
-  //   if (err) 
-  //   { //if inserting data fails
-  //     console.log(err);
-  //   }
-  //   console.log("1 document inserted twice in database");
-    
-  // });
   res.json(`json object sended`);
 })
 
