@@ -1,31 +1,17 @@
-const mongoClient = require('mongodb').MongoClient;
-const mongoDbUrl = 'mongodb://127.0.0.1:27017';
-
-let userdb;
-let dbobj;
+const mongoConnnection = require('./connection_Config');
 
 //sending the reference of the mongoDb connection
 function connect(callback){
-    mongoClient.connect(mongoDbUrl, (err, db) => {
-        if(err)
-          console.log(err);
-        dbobj = db;
-        userdb = db.db("user");  //reference of your created database!!
-        callback();
-    });
+    mongoConnnection.connect(); //getting connection to mongodb from connection_config file
+    callback();
 }
 
 function getUser(){
-    return userdb;  //sending the reference of the database you created !!
-}
-
-function close(){
-    dbobj.close(); //Closing the connection with your databases !!
+    return mongoConnnection.connectToDb("user");  //sending the reference of the database you created !!
 }
 
 module.exports = {
     connect,
-    getUser,
-    close
+    getUser
 };
  
