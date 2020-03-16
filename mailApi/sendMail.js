@@ -26,3 +26,5 @@ function sendMail(data) {
   });
 }
 module.exports = {sendMail};
+
+
