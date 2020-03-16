@@ -1,24 +1,23 @@
-const express = require('express');
 nodeMailer = require('nodemailer');
 
 //function to send the email
-function emailData(mail_Obj) {
+function emailData(mailObj) {
   let transporter = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
     secure: true,
     auth: {
       //assigning the email id and password of the sender
-        user: mail_Obj.from,
+        user: mailObj.from,
         pass: 'zuykdecyecslslgu'
     }
   });
 
   let mailOptions = {
     //composing a new mail 
-    to: mail_Obj.to,
-      subject: mail_Obj.subject,
-      text: mail_Obj.text
+    to: mailObj.to,
+      subject: mailObj.subject,
+      text: mailObj.text
   };
   
   //sending the mail and getting acknowlegment !!
