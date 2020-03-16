@@ -2,19 +2,15 @@ const exp = require('express');
 
 const router = exp.Router();
 var mail = require('./email');
-
-
-
 router.get('/', function (req, res) {
-       var from = 'subhajit28061997@gmail.com';
-       var to = 'subhajit.nandi@joshsoftware.com';
-       var subject = 'mail test';
-       var text = 'first mail';
-       mail.helpmail(from, to, subject, text);
+  var obj = {
+    from: 'subhajit28061997@gmail.com',
+    to: 'subhajit.nandi@joshsoftware.com',
+    subject: 'mail test',
+    text: 'first mail'
 
-       res.json({
+  };
 
-              'success': 'mail sended'
-       })
+  mail.helpmail(obj);
 })
 module.exports = router;
