@@ -6,9 +6,10 @@ function senderFunction(mailOptions){
 	service: 'gmail',
 	auth: {	
 		user: 'onkarhasabe1@gmail.com',
-		pass: '********'
+		pass: 'popatraohasabe'
 	}
 	});
+	
 transporter.sendMail(mailOptions, function(error, info){
 	if (error) {
 		console.log(error);
@@ -21,3 +22,4 @@ transporter.sendMail(mailOptions, function(error, info){
 module.exports = {
 	senderFunction
 }
+
