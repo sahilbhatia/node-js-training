@@ -6,11 +6,9 @@ const bodyparser = require('body-parser');
 router.use(bodyparser.json());
 
 router.post('/add', function (req, res) {
-  //console.log(`${req.body}`);
-
   //inserting data into the collection
   myDbConn.get().collection('userdetail').insertOne(req.body, function (err, res) {
-    if (err) { //if inserting data fails
+    if (err) { //if inserting data fails we will git the error description
       console.log(err);
     }
     else {
