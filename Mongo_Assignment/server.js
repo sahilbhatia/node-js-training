@@ -1,14 +1,14 @@
 const express = require('express');
-const myRoute = require('./user');
+const userFileRef = require('./user');
 const app = express();
 
 const port = process.env.NODE_ENV
 
-const mydbConnection = require('./mongo_Connection');
-app.use('/user',myRoute);
+const dbConnection = require('./mongo_Connection');
+app.use('/user',userFileRef);
 
 //Established the connection with the mongoDb server
-mydbConnection.connect(function(err) 
+dbConnection.connect(function(err) 
 {
   if(err)
   {console.log(err);}
