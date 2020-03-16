@@ -1,6 +1,7 @@
-const mongoClient = require('mongodb').MongoClient;
-const mongoDbUrl = 'mongodb://127.0.0.1:27017';
+var mongoconn=require('./configuration');
 var mongodb;
+mongoClient=mongoconn.mongoclient();
+mongoDbUrl=mongoconn.geturl();
 function connect(callback) {
 
   mongoClient.connect(mongoDbUrl, { useUnifiedTopology: true }, (err, db) => {
