@@ -1,7 +1,5 @@
 const mongoClient = require('mongodb').MongoClient;
-
 let dbObj;
-
 //Declaring environment variable!!!!!
 const username = process.env.USERNAME;
 const password = process.env.PASSWORD;
@@ -15,7 +13,6 @@ function connect()
   console.log(`password is ${password}`);
   console.log(`URL is : ${mongoUrl}`);
   console.log(`mongoPort : ${mongoPort}`);
-
     //Establishing connection with mongoDb !!!!!!
     //NODE_ENV=3004 USERNAME=userAdmin PASSWORD=**** URL=127.0.0.1 PORT=27017 node server.js
     mongoClient.connect(`mongodb://${username}:${password}@${mongoUrl}:${mongoPort}`,function(err, db){  
@@ -28,7 +25,6 @@ function connect()
       }
     });
 }
-
 //Connecting to the required Database!!!!
 function connectToDb(dbName) {
   return dbObj.db(dbName);

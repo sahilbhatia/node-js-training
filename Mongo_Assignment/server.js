@@ -1,9 +1,7 @@
 const express = require('express');
 const userFileRef = require('./user');
 const app = express();
-
 const port = process.env.NODE_ENV
-
 const dbConnection = require('./mongo_Connection');
 app.use('/user',userFileRef);
 
@@ -18,4 +16,3 @@ dbConnection.connect(function(err)
     console.log("server running on port 3004");
   });
 });
-
