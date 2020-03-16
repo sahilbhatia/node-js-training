@@ -8,7 +8,7 @@ router.get('/information/:from/:to/:subject/:text', function (req, res) {
 
     from: req.params.from,
     to: req.param.to,
-    subject: req.param.sub,
+    subject: req.param.subject,
     text: req.param.text
 
   };
