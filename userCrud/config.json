@@ -1,0 +1,7 @@
+{
+  "domain": "www.example.com",
+  "mongodb": {
+    "username": "jitendra",
+    "password": "jitu2121"
+  }
+}
