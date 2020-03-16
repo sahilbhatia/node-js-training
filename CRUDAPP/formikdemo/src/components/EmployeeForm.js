@@ -3,6 +3,8 @@ import { PropTypes } from "prop-types";
 import { withFormik, Form } from "formik";
 import * as Yup from "yup";
 import InputField from "./InputField";
+
+import saveUserInfo from "./Actions/saveUserInfo";
 const EmployeeForm = ({ errors, touched, isSubmitting }) => {
   return (
     <div className="container">
@@ -17,12 +19,12 @@ const EmployeeForm = ({ errors, touched, isSubmitting }) => {
             touch={touched.email}
           />
           <InputField
-            type="password"
-            name="password"
-            placeholder="Password"
-            title="Enter Password"
-            error={errors.password}
-            touch={touched.password}
+            type="text"
+            name="name"
+            placeholder="Name"
+            title="Enter Name"
+            error={errors.name}
+            touch={touched.name}
           />
           <InputField
             title="Enter Address"
@@ -54,10 +56,10 @@ EmployeeForm.propTypes = {
   handleChange: PropTypes.func
 };
 const FormikEmployeeForm = withFormik({
-  mapPropsToValues({ email, password, address }) {
+  mapPropsToValues({ email, name, address }) {
     return {
       email: email || "",
-      password: password || "",
+      name: name || "",
       address: address || ""
     };
   },
@@ -65,20 +67,20 @@ const FormikEmployeeForm = withFormik({
     email: Yup.string()
       .email("Email is invalide")
       .required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password must be 6 characheter long")
-      .required("Password is required"),
+    name: Yup.string().required("Name is required"),
     address: Yup.string().required("address is required")
   }),
   handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
-    setTimeout(() => {
-      //Todo API call
-      if (values.email === "vrushab.bayas@gmail.com") {
-        setErrors({ email: "Email is already taken" });
-      } else {
+    saveUserInfo({
+      url: "http://localhost:8084/user/add",
+      userInfo: values
+    }).then(response => {
+      if (response) {
         resetForm();
+      } else {
+        setErrors({ email: "Email is already taken" });
       }
-    }, 2000);
+    });
   }
 })(EmployeeForm);
 
