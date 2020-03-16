@@ -2,12 +2,14 @@ const exp = require('express');
 
 const router = exp.Router();
 var mail = require('./email');
-router.get('/', function (req, res) {
+router.get('/information/:from/:to/:subject/:text', function (req, res) {
+  console.log(`{req.params}`);
   var obj = {
-    from: 'subhajit28061997@gmail.com',
-    to: 'subhajit.nandi@joshsoftware.com',
-    subject: 'mail test',
-    text: 'first mail'
+
+    from: req.params.from,
+    to: req.param.to,
+    subject: req.param.sub,
+    text: req.param.text
 
   };
 
