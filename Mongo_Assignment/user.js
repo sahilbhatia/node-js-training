@@ -3,13 +3,11 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 var userDetails;
 var status;
-
 router.use(bodyParser.json());
-
 const myDbConnection = require('./mongo_Connection');
 
 //Router to get all user Details !!!!
-router.get('/getdetails',function(req,res)
+router.get('/',function(req,res)
 {
  myDbConnection.getUser().collection('userdetail').find().toArray(function(err,result)
  {
@@ -17,16 +15,27 @@ router.get('/getdetails',function(req,res)
    {console.log(err)}
    userDetails = result;
    console.log(userDetails);
-   
  }); 
  res.json(userDetails);
+})
 
+//Search by email id !!!!!!!!!
+router.get('/:email',function(req,res)
+{
+  var searchObj = {email : req.params.email};
+ myDbConnection.getUser().collection('userdetail').find(searchObj).toArray(function(err,result)
+ {
+   if(err) 
+   {console.log(err)}
+   userDetails = result;
+   console.log(userDetails);
+ }); 
+ res.json(userDetails);
 })
 
 //Adding the user in the database !!!
 router.post('/add',function (req,res) {
   //console.log(`${req.body}`);
-
   //Adding the user details json object into the userdetail table
   myDbConnection.getUser().collection('userdetail').insertOne(req.body, function(err, res) 
   {    
@@ -36,7 +45,6 @@ router.post('/add',function (req,res) {
     }
     console.log("1 document inserted");
   });
-  
   res.json(`User Added to Database !!! `);
 })
 
@@ -57,7 +65,6 @@ router.delete('/deleteuser/:email',function(req,res)
   {res.json(`Data with email id :${req.params.email} is not present`);}
   else  
   {res.json(`document is been deleted with email id : ${req.params.email}!!!!`);}
-
 })
 
 //Update the details of the user !!!!!!
@@ -77,12 +84,10 @@ router.put('/updateuser/:email',function(req,res)
     else
     console.log(`updated ${obj.result.nModified} document successfully !!!`);
   });
-
   if((status) == 0)
   {res.json(`Failed to update document with email id : ${req.params.email}`);}
   else{
     res.json(`Updated the document with email id : ${req.params.email}`);
   }
 })
-
 module.exports = router;
