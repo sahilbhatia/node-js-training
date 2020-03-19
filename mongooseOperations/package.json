@@ -1,0 +1,16 @@
+{
+  "name": "dbmongoose",
+  "version": "1.0.0",
+  "description": "",
+  "main": "config.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "onkar",
+  "license": "ISC",
+  "dependencies": {
+    "express-validator": "^6.4.0",
+    "mongoose": "^5.9.5"
+  }
+}
