@@ -2,22 +2,20 @@ exports.helpmail = (obj) => {
 
   const mailhelper = require('nodemailer');
 
-  var smail = mailhelper.createTransport({
-    host:'smtp.gmail.com',
-    port : 465,
+  let smail = mailhelper.createTransport({
+    host: 'smtp.gmail.com',
     service: 'gmail',
-    secure:true,
+    secure: true,
     auth: {
       user: obj.from,
       pass: 'taghzwdztpnrmiwa'
     }
   });
-
-  var message = {
+  let message = {
     to: obj.to,
     subject: obj.subject,
     text: obj.text
-  }
+  };
 
   smail.sendMail(message, function (error, info) {
     if (error) {

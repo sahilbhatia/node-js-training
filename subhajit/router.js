@@ -1,18 +1,18 @@
 const exp = require('express');
 
 const router = exp.Router();
-var mail = require('./email');
+let mail = require('./email');
 router.get('/information/:from/:to/:subject/:text', function (req, res) {
-  console.log(`{req.params}`);
-  var obj = {
-
+  console.log(req.params.to);
+  let obj = {
     from: req.params.from,
-    to: req.param.to,
-    subject: req.param.subject,
-    text: req.param.text
+    to: req.params.to,
+    subject: req.params.subject,
+    text: req.params.text
 
   };
 
   mail.helpmail(obj);
 })
 module.exports = router;
+
