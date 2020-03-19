@@ -1,5 +1,6 @@
 const { check, validationResult } = require('express-validator');
 const User = require('./userModel.js');
+const userClass =require('./userDetails.js');
 
 exports.create = (req, res) => {
 	const errors = validationResult(req);
@@ -12,11 +13,13 @@ exports.create = (req, res) => {
           message: "User email-id can not be empty"
       });
   }
-
+	const userDetail = new userClass.UserDetails(req.body.email,req.body.name,req.body.mobile_no);
+	let uEmail = userDetail.getUserEmail();
+	let uName = userDetail.getUserName();
+	let uMobileNo = userDetail. getUserMobileNo();
   const user = new User({
-      id : req.body.id || "no name to user", 
-      name : req.body.name,
-      email : req.body.email,
+      name : uName|| "unknown name",
+      email : uEmail ,
       location :req.body.location
   });
 
@@ -46,23 +49,24 @@ exports.findOne = (req, res) => {
 	if (!errors.isEmpty()) {
 		return res.status(422).json({ errors: errors.array() });
 	}
-	
-  User.findOne({"email" : req.params.email})
+	const userDetail = new userClass.UserDetails(req.params.email);
+	let uEmail = userDetail.getUserEmail();
+  User.findOne({"email" : uEmail})
   .then(user => {
       if(!user) {
           return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with email " + uEmail
           });            
       }
       res.send(user);
   }).catch(err => {
       if(err.kind === 'ObjectId') {
           return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with email " + uEmail
           });                
       }
       return res.status(500).send({
-          message: "Error retrieving user with email " + req.params.email
+          message: "Error retrieving user with email " + uEmail
       });
   });
 };
@@ -78,10 +82,14 @@ exports.update = (req, res) => {
           message: "User email can not be empty"
       });
   }
-
+	const userDetail = new userClass.UserDetails(req.body.email,req.body.name,req.body.mobile_no);
+	let uEmail = userDetail.getUserEmail();
+	let uName = userDetail.getUserName();
+	let uMobileNo = userDetail. getUserMobileNo();
+	
   User.findOneAndUpdate(req.params.email, {
-      name : req.body.name,
-      email : req.body.email,
+      name : uName,
+      email : uEmail,
       location :req.body.location
   }, {new: true})
   .then(user => {
@@ -108,24 +116,27 @@ exports.delete = (req, res) => {
 	if (!errors.isEmpty()) {
 		return res.status(422).json({ errors: errors.array() });
 	}
-  User.findOneAndDelete(req.params.email)
+	const userDetail = new userClass.UserDetails(req.params.email);
+	let uEmail = userDetail.getUserEmail();
+  User.findOneAndDelete({"email" : uEmail})
   .then(user => {
       if(!user) {
           return res.status(404).send({
-              message: "User not found with email" + req.params.email
+              message: "User not found with email" + uEmail
           });
       }
       res.send({message: "User deleted successfully!"});
   }).catch(err => {
       if(err.kind === 'ObjectId' || err.name === 'NotFound') {
 return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with email " + uEmail
           });                
       }
       return res.status(500).send({
-          message: "Could not delete user with email " + req.params.email
+          message: "Could not delete user with email " + uEmail
       });
   });
 };
+
 
 
