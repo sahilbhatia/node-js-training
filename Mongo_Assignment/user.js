@@ -1,6 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const bodyParser = require('body-parser');
+const validateData = require('./validation');
+//creating object of class validate !!!
+const vobj = new validateData.validate();
+
 var userDetails;
 var status;
 router.use(bodyParser.json());
@@ -16,7 +20,7 @@ router.get('/',function(req,res)
    userDetails = result;
    console.log(userDetails);
  }); 
- res.json(userDetails);
+ res.json({"All the user ": userDetails});
 })
 
 //Search by email id !!!!!!!!!
@@ -30,22 +34,36 @@ router.get('/:email',function(req,res)
    userDetails = result;
    console.log(userDetails);
  }); 
- res.json(userDetails);
+ res.json({"User you searching for " : userDetails});
 })
 
 //Adding the user in the database !!!
 router.post('/add',function (req,res) {
-  //console.log(`${req.body}`);
-  //Adding the user details json object into the userdetail table
-  myDbConnection.getUser().collection('userdetail').insertOne(req.body, function(err, res) 
-  {    
-    if (err) 
-    { //if inserting data fails
-      console.log(err);
-    }
-    console.log("1 document inserted");
-  });
-  res.json(`User Added to Database !!! `);
+  var validEmail = vobj.emailvalidate(req.body);
+  if(validEmail == true)
+  {
+    var duplicateEmail = vobj.duplicateEmail(req.body,function(status)
+    {
+      duplicateEmail = status;
+    });
+  }
+  if(validEmail === true && duplicateEmail === false ) // only if email is valid and email id is new !!
+  {  //Adding the user details json object into the userdetail table
+      myDbConnection.getUser().collection('userdetail').insertOne(req.body, function(err, res) 
+    {    
+      if (err) 
+      { //if inserting data fails
+        console.log(err);
+      }
+      console.log("1 document inserted");
+    });
+  res.json({"status" : `User Added to Database !!! `});
+  }
+  else
+  {
+    res.json ({"status" : "user can't be added !!!!"});
+  }
+  
 })
 
 //delete user by emailid !!!!!!!!!
@@ -62,9 +80,9 @@ router.delete('/deleteuser/:email',function(req,res)
     else { console.log(`${obj.result.n} document deleted`);}
   });
   if((status) == 0)
-  {res.json(`Data with email id :${req.params.email} is not present`);}
+  {res.send(`Data with email id :${req.params.email} is not present`);}
   else  
-  {res.json(`document is been deleted with email id : ${req.params.email}!!!!`);}
+  {res.send(`document is been deleted with email id : ${req.params.email}!!!!`);}
 })
 
 //Update the details of the user !!!!!!
@@ -80,14 +98,14 @@ router.put('/updateuser/:email',function(req,res)
     console.log(`Records updated : ${obj.result.nModified}`);
     if(err) console.log(err);
     if((obj.result.nModified) == 0)
-    console.log(`Failed to update the document !! `);
+    console.log(`Failed to update the document !!`);
     else
     console.log(`updated ${obj.result.nModified} document successfully !!!`);
   });
   if((status) == 0)
-  {res.json(`Failed to update document with email id : ${req.params.email}`);}
+  {res.send(`Failed to update document with email id : ${req.params.email}`);}
   else{
-    res.json(`Updated the document with email id : ${req.params.email}`);
+    res.send(`Updated the document with email id : ${req.params.email}`);
   }
 })
 module.exports = router;

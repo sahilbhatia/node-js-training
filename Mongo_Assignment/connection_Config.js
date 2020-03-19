@@ -27,7 +27,8 @@ function connect()
 }
 //Connecting to the required Database!!!!
 function connectToDb(dbName) {
-  return dbObj.db(dbName);
+  let dbNameConn = dbObj.db(dbName);
+  return dbNameConn;
 }
 module.exports = {connect,connectToDb};
   
