@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const user = require('./controller');
+
 const { validate, ValidationError, Joi } = require('express-validation');
 
 const loginValidation = {
