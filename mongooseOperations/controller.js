@@ -1,12 +1,20 @@
-const { check, validationResult } = require('express-validator');
 const User = require('./userModel.js');
 const userClass =require('./userDetails.js');
+const joi = require('joi');
 
 exports.create = (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
+  const schema = joi.object().keys({
+	  email :  joi.string().email().required(),
+	  name : joi.required(),
+	  mobile_no : joi.required(),
+  });
+  
+  joi.validate(req.body,schema,(err,result)=>{
+	  if(err)
+	  {
+		  res.json("an error in your credentials");
+	  }
+  });
 		
   if(!req.body.email) {
       return res.status(400).send({
@@ -72,11 +80,19 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
-
+	 const schema = joi.object().keys({
+	  email :  joi.string().email().required(),
+	  name : joi.required(),
+	  mobile_no : joi.required(),
+  });
+  
+  joi.validate(req.body,schema,(err,result)=>{
+	  if(err)
+	  {
+		  res.json("an email error");
+	  }
+  });
+ 
   if(!req.body.email) {
       return res.status(400).send({
           message: "User email can not be empty"
@@ -112,10 +128,6 @@ exports.update = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-	const errors = validationResult(req);
-	if (!errors.isEmpty()) {
-		return res.status(422).json({ errors: errors.array() });
-	}
 	const userDetail = new userClass.UserDetails(req.params.email);
 	let uEmail = userDetail.getUserEmail();
   User.findOneAndDelete({"email" : uEmail})
