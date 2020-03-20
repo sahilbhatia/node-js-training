@@ -1,13 +1,6 @@
 const User = require('./userModel.js');
 // Create and Save a new User
 exports.create = (req, res) => {
-  // Validate request
-  if(!req.body.email) {
-      return res.status(400).send({
-          message: "User email-id can not be empty"
-      });
-  }
-
   // Create a User
   const user = new User({
       id : req.body.id || "Untitled User", 
@@ -39,7 +32,7 @@ exports.findAll = (req, res) => {
   });
 };
 
-// Find a single note with a noteId
+// Find a single User with a user email
 exports.findOne = (req, res) => {
   console.log(req.params.email);
   User.findOne({email :req.params.email})
@@ -62,7 +55,7 @@ exports.findOne = (req, res) => {
   });
 };
 
-// Update a note identified by the noteId in the request
+// Update a user identified by the email in the request
 exports.update = (req, res) => {
   // Validate Request
   if(!req.body.email) {
@@ -71,7 +64,7 @@ exports.update = (req, res) => {
       });
   }
 
-  // Find note and update it with the request body
+  // Find user and update it with the request body
   User.findOneAndUpdate(req.params.email, {
       id : req.body.id || "Untitled user",
       name : req.body.name,
