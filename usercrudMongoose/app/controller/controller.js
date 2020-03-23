@@ -1,11 +1,9 @@
+const express = require('express');
+const app = express();
+
 const UserDetails = require('../model/UserModel');
 create = (req, res) => {
-  if (!req.body.email) {
-    return res.status(400).send({
-      message: "email can not be empty"
-    });
-  }
-  //creating an user 
+
   const user = new UserDetails({
     id: req.body.id,
     name: req.body.name,
@@ -20,8 +18,8 @@ create = (req, res) => {
         message: err.message || "Some error occurred while creating the Note."
       });
     });
-};
 
+};
 
 findAll = (req, res) => {
   UserDetails.find().then(user => {
