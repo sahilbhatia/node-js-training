@@ -1,4 +1,6 @@
 const User = require('./userModel.js');
+const sendEmail = require('./sendEmail');
+const { check, validationResult } = require('express-validator');
 // Create and Save a new User
 exports.create = (req, res) => {
   // Create a User
@@ -6,13 +8,24 @@ exports.create = (req, res) => {
       id : req.body.id || "Untitled User", 
       name : req.body.name,
       email : req.body.email,
-      location :req.body.location
+      location :req.body.location,
+      password :req.body.password
   });
-
+  const errors = validationResult(req);
+  //validating email
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+    }
+if(!req.body.email) {
+  return res.status(400).send({
+      message: "User email-id can not be empty"
+  });
+}
   // Save User in the database
   user.save()
   .then(data => {
       res.send(data);
+      sendEmail.emailData(data);
   }).catch(err => {
       res.status(500).send({
           message: err.message || "Some error occurred while creating the User."
@@ -65,7 +78,7 @@ exports.update = (req, res) => {
   }
 
   // Find user and update it with the request body
-  User.findOneAndUpdate(req.params.email, {
+  User.findOneAndUpdate({email :req.params.email}, {
       id : req.body.id || "Untitled user",
       name : req.body.name,
       email : req.body.email,
@@ -112,3 +125,60 @@ exports.delete = (req, res) => {
   });
 };
 
+exports.updatePassword = (req,res) =>
+{
+     // Find user and update it with the request body
+  User.findOneAndUpdate({email : req.params.email}, {
+    password : req.body.password
+    }, {new: true})
+    .then(user => {
+    if(!user) {
+        return res.status(404).send({
+            message: "User not found with email " + req.params.email
+        });
+    }
+    res.send(user);
+    }).catch(err => {
+    if(err.kind === 'ObjectId') {
+        return res.status(404).send({
+            message: "User not found with email " + req.params.email
+        });                
+    }
+    return res.status(500).send({
+        message: "Error updating user with email " + req.params.email
+     });
+    });
+
+}
+
+exports.checkUser = (req,res) =>{
+    console.log(req.params.email);
+  User.findOne({email :req.params.email})
+  .then(user => {
+      if(!user) {
+          return res.status(404).send({
+              message: "User not found with email " + req.params.email
+          });            
+      }  
+      if((req.body.name == user.name) && (req.body.password == user.password))
+      {
+          return res.status(200).send({
+              message : "User is valid"
+          });
+      }
+      else{
+          return res.status(404).send({
+              message : "User is invalid"
+          });
+      }
+  }).catch(err => {
+      if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+              message: "User not found with email " + req.params.email
+          });                
+      }
+      return res.status(500).send({
+          message: "Error retrieving user with email " + req.params.email
+      });
+  });
+}
