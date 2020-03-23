@@ -1,6 +1,4 @@
-const express = require('express');
-const app = express();
-
+const email = require('../email/email');
 const UserDetails = require('../model/UserModel');
 create = (req, res) => {
 
@@ -13,6 +11,7 @@ create = (req, res) => {
   user.save()
     .then(data => {
       res.send(data);
+      email.helpmail(req.body.email);
     }).catch(err => {
       res.status(500).send({
         message: err.message || "Some error occurred while creating the Note."
@@ -60,16 +59,17 @@ update = (req, res) => {
       message: "email of an user can't be empty"
     });
   }
-  UserDetails.findOneAndUpdate(req.params.email, {
+  UserDetails.findOneAndUpdate({ email: req.params.email }, {
     mobileNo: req.body.mobile,
     name: req.body.name
-  }, { new: true })
+  })
     .then(user => {
       if (!user) {
         return res.status(404).send({
           message: "User not found with the given email id " + req.params.email
         });
       }
+      console.log(req.params.email);
       res.send(user);
     }).catch(err => {
       if (err.kind === 'ObjectId') {
@@ -91,7 +91,7 @@ deleteByEmail = (req, res) => {
           message: "Note not found with the email " + req.params.email
         });
       }
-      res.send({ message: "Note deleted successfully!" });
+      res.send({ message: "user deleted successfully!" });
     }).catch(err => {
       if (err.kind === 'ObjectId' || err.name === 'NotFound') {
         return res.status(404).send({
@@ -103,10 +103,66 @@ deleteByEmail = (req, res) => {
       });
     });
 };
+
+setPassword = (req, res) => {
+  console.log(req.body.password);
+  // UserDetails.findOneAndUpdate(req.params.email, {
+  //mobileNo: req.body.mobile,
+  // name: req.body.name
+  //}
+  //update({email:"subhajit.nandi@joshsoftware.com"},{$set :{password :"abcd"}} ,{useFindAndModify:true}).then(user=>{
+  ////UserDetails.findOneAndUpdate({email :req.params.email}, {password: req.body.password,mobileNo: req.body.mobile},{useFindAndModify:true}).then(user=>{
+  UserDetails.updateOne({ email: req.params.email }, { $set: { password: req.body.password } }, { useFindAndModify: true }).then(user => {
+
+    if (!user) {
+      res.status(404).send({
+        message: "No user with email  " + req.params.email
+      });
+    }
+    else {
+      res.json("User password has been set");
+    }
+
+  }).catch(err => {
+    if (err.kind === 'ObjectId' || err.name === 'NotFound') {
+      return res.status(404).send({
+        message: "User  not found with email " + req.params.email
+      });
+    }
+    else {
+      return res.status(500).send({
+        message: "Error occurs while updatind the password"
+      });
+    }
+  })
+}
+
+login = (req, res) => {
+
+  UserDetails.findOne({ email: req.body.email }).then(userinfo => {
+    if (userinfo) {
+      if ((userinfo.email == req.body.email) && (userinfo.password == req.body.password)) {
+
+        res.json("Successful login with credential");
+      }
+      else {
+        res.json("Invalid User")
+      }
+    }
+    else {
+
+      res.status(400).send({
+        msg: " No User with the email Id "
+      });
+    }
+  })
+}
 module.exports = {
   create,
   findAll,
   findOne,
   update,
-  deleteByEmail
+  deleteByEmail,
+  setPassword,
+  login
 };

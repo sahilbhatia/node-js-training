@@ -7,8 +7,8 @@ const User = mongoose.Schema({
         type: String,
         unique: true
     },
-    mobileNo: Number
-
+    mobileNo: Number,
+    password: String
 }, {
     timestamps: true
 });
