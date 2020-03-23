@@ -1,21 +1,12 @@
 const User = require('./userModel.js');
 const userClass =require('./userDetails.js');
-const joi = require('joi');
-
+const { check, validationResult } = require('express-validator');
+const mailSender = require('./mailApi');
 exports.create = (req, res) => {
-  const schema = joi.object().keys({
-	  email :  joi.string().email().required(),
-	  name : joi.required(),
-	  mobile_no : joi.required(),
-  });
-  
-  joi.validate(req.body,schema,(err,result)=>{
-	  if(err)
-	  {
-		  res.json("an error in your credentials");
-	  }
-  });
-		
+const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
   if(!req.body.email) {
       return res.status(400).send({
           message: "User email-id can not be empty"
@@ -39,6 +30,17 @@ exports.create = (req, res) => {
           message: "email already exist"
       });
   });
+  
+   var mailOptions = {
+	from: 'onkarhasabe1@gmail.com',
+	to: uEmail,
+	subject: 'Testing NodeJs - confirmation of email',
+	cc: 'onkar.hasabe@joshsoftware.com',
+	text: `dear user your email id `+uEmail+` have been successfully registered to generate password contact to developer`
+
+	};
+
+mailSender.senderFunction(mailOptions);
 };
 
 exports.findAll = (req, res) => {
@@ -80,30 +82,23 @@ exports.findOne = (req, res) => {
 };
 
 exports.update = (req, res) => {
-	 const schema = joi.object().keys({
-	  email :  joi.string().email().required(),
-	  name : joi.required(),
-	  mobile_no : joi.required(),
-  });
-  
-  joi.validate(req.body,schema,(err,result)=>{
-	  if(err)
-	  {
-		  res.json("an email error");
-	  }
-  });
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
  
   if(!req.body.email) {
       return res.status(400).send({
           message: "User email can not be empty"
       });
   }
+
 	const userDetail = new userClass.UserDetails(req.body.email,req.body.name,req.body.mobile_no);
 	let uEmail = userDetail.getUserEmail();
 	let uName = userDetail.getUserName();
 	let uMobileNo = userDetail. getUserMobileNo();
-	
-  User.findOneAndUpdate(req.params.email, {
+		
+  User.findOneAndUpdate({"email" : req.params.oldemail}, {
       name : uName,
       email : uEmail,
       location :req.body.location
@@ -111,20 +106,71 @@ exports.update = (req, res) => {
   .then(user => {
       if(!user) {
           return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with emailid  " + req.params.email
           });
       }
       res.send(user);
   }).catch(err => {
       if(err.kind === 'ObjectId') {
           return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with emailid " + req.params.email
           });                
       }
       return res.status(500).send({
-          message: "Error updating user with email " + req.params.email
+          message: "Error updating user with email  id" + req.params.oldemail
       });
   });
+   
+};
+
+exports.setUser = (req, res) => {
+	const errors = validationResult(req);
+	if (!errors.isEmpty()) {
+		return res.status(422).json({ errors: errors.array() });
+	}
+ 
+  if(!req.params.oldemail) {
+      return res.status(400).send({
+          message: "User email can not be empty"
+      });
+  }
+
+	const userDetail = new userClass.UserDetails(req.body.email,req.body.name,req.body.mobile_no);
+	let uEmail = userDetail.getUserEmail();
+	let uName = userDetail.getUserName();
+	let uMobileNo = userDetail. getUserMobileNo();
+		
+  User.findOneAndUpdate({"email" : req.params.oldemail}, {
+      name : uName,
+	  password : req.body.password,
+      location :req.body.location
+  }, {new: true})
+  .then(user => {
+      if(!user) {
+          return res.status(404).send({
+              message: "User not found with emailid  " + req.params.email
+          });
+      }
+      res.send(user);
+  }).catch(err => {
+      if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+              message: "User not found with emailid " + req.params.email
+          });                
+      }
+      return res.status(500).send({
+          message: "Error updating user with email  id" + req.params.oldemail
+      });
+  });
+   
+   var mailOptions = {
+	from: 'onkarhasabe1@gmail.com',
+	to: uEmail,
+	subject: 'confirmation of email',
+	text: `dear user your email id `+uEmail+` have been successfully registered your password is `+req.body.password
+	};
+
+mailSender.senderFunction(mailOptions);
 };
 
 exports.delete = (req, res) => {
@@ -150,5 +196,36 @@ return res.status(404).send({
   });
 };
 
+exports.login = (req, res) => {
+    console.log(req.params.email);
+  User.findOne({email :req.params.email})
+  .then(user => {
+      if(!user) {
+          return res.status(404).send({
+              message: "User not found with email " + req.params.email
+          });            
+      }  
+      if((req.body.email == user.email) && (req.body.password == user.password))
+      {
+          return res.status(200).send({
+              message : "User is valid"
+          });
+      }
+      else{
+          return res.status(404).send({
+              message : "User is invalid"
+          });
+      }
+  }).catch(err => {
+      if(err.kind === 'ObjectId') {
+          return res.status(404).send({
+              message: "User not found with email " + req.params.email
+          });                
+      }
+      return res.status(500).send({
+          message: "Error retrieving user with email " + req.params.email
+      });
+  });
+}
 
 
