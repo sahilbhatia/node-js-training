@@ -8,7 +8,8 @@ router.get('/user/:email', controller.findOne);
 router.put('/user/:email', checkValid.validate(checkValid.updateValidation), controller.update);
 router.delete('/user/:email', controller.deleteByEmail);
 router.put('/user/setPass/:email',controller.setPassword);
-router.post('/user/login',controller.login);
+router.post('/user/login',controller.login,controller.jwtAuth);//The whole json obtained here is passsed as the body of the authentication route
+router.post('/user/authentication',controller.verification,controller.checkToken);
 router.use(function (err, req, res, next) {
   if (err) {
     console.log(err);

@@ -17,7 +17,6 @@ create = (req, res) => {
         message: err.message || "Some error occurred while creating the Note."
       });
     });
-
 };
 
 findAll = (req, res) => {
@@ -106,12 +105,7 @@ deleteByEmail = (req, res) => {
 
 setPassword = (req, res) => {
   console.log(req.body.password);
-  // UserDetails.findOneAndUpdate(req.params.email, {
-  //mobileNo: req.body.mobile,
-  // name: req.body.name
-  //}
-  //update({email:"subhajit.nandi@joshsoftware.com"},{$set :{password :"abcd"}} ,{useFindAndModify:true}).then(user=>{
-  ////UserDetails.findOneAndUpdate({email :req.params.email}, {password: req.body.password,mobileNo: req.body.mobile},{useFindAndModify:true}).then(user=>{
+
   UserDetails.updateOne({ email: req.params.email }, { $set: { password: req.body.password } }, { useFindAndModify: true }).then(user => {
 
     if (!user) {
@@ -137,23 +131,55 @@ setPassword = (req, res) => {
   })
 }
 
-login = (req, res) => {
+login = (req, res, next) => {
 
   UserDetails.findOne({ email: req.body.email }).then(userinfo => {
     if (userinfo) {
       if ((userinfo.email == req.body.email) && (userinfo.password == req.body.password)) {
-
-        res.json("Successful login with credential");
+        //res.json("Successful login with credential");
+        next();
       }
       else {
-        res.json("Invalid User")
+        res.json("Invalid Username or password");
       }
     }
     else {
-
       res.status(400).send({
         msg: " No User with the email Id "
       });
+    }
+  })
+}
+
+const jwt = require('jsonwebtoken');
+jwtAuth = (req, res) => {
+  const user = req.body;
+  jwt.sign(user, 'secretKey', { expiresIn: 60 }, (err, token) => {
+    res.json({
+      token
+    });
+  })
+}
+
+verification = (req, res, next) => {
+  const token = req.body.token;
+  // console.log(token);
+  if (typeof token !== 'undefined') {
+    next();
+  }
+  else {
+    res.status(403).send({ error: "No token given" });
+  }
+}
+
+checkToken = (req, res) => {
+  jwt.verify(req.body.token, 'secretKey', (err, Data) => {
+    if (err)
+      res.status(403).send({
+        msg: "forbidden due to wrong token or expired"
+      });
+    else {
+      res.json("Login successfully");
     }
   })
 }
@@ -164,5 +190,8 @@ module.exports = {
   update,
   deleteByEmail,
   setPassword,
-  login
+  login,
+  jwtAuth,
+  verification,
+  checkToken
 };

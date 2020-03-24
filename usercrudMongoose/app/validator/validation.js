@@ -7,7 +7,6 @@ const userValidation = {
     email: Joi.string().email().required(),
     name: Joi.string().regex(/^[a-zA-Z]{3,30}$/),
     mobile: Joi.string().regex(/^[6-9][0-9]{9}$/)
-
   })
 }
 const updateValidation = {
