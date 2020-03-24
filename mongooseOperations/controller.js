@@ -2,6 +2,7 @@ const User = require('./userModel.js');
 const userClass =require('./userDetails.js');
 const { check, validationResult } = require('express-validator');
 const mailSender = require('./mailApi');
+const jwt = require('jsonwebtoken');
 exports.create = (req, res) => {
 const errors = validationResult(req);
 	if (!errors.isEmpty()) {
@@ -197,7 +198,6 @@ return res.status(404).send({
 };
 
 exports.login = (req, res) => {
-    console.log(req.params.email);
   User.findOne({email :req.params.email})
   .then(user => {
       if(!user) {
@@ -207,8 +207,18 @@ exports.login = (req, res) => {
       }  
       if((req.body.email == user.email) && (req.body.password == user.password))
       {
+		  var options = {
+			'expiresIn': '1s'
+		};
+		 const token = jwt.sign({
+			  email : user.email
+		  },
+		  process.env.JWT_KEY,
+		  options
+		  );
           return res.status(200).send({
-              message : "User is valid"
+              message : "User is valid",
+			  token : token
           });
       }
       else{
@@ -227,5 +237,13 @@ exports.login = (req, res) => {
       });
   });
 }
+
+exports.getData =(req,res)=> {
+var decoded = jwt.decode(req.params.token);
+var decoded = jwt.decode(req.params.token, {complete: true});
+console.log(decoded.header);
+console.log(decoded.payload.email)
+  res.json({token : req.params.token})
+};
 
 

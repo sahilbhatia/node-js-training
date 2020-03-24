@@ -32,11 +32,15 @@ router.get('/user', user.findAll);
 	check('email').isEmail()
 	],user.delete);
  
- 
- router.put('/login/:email',[
+  router.put('/login/:email',[
 	check('email').isEmail()
 	], user.login);
  
+ router.delete('/user/:email', [
+	check('email').isEmail()
+	],user.delete);
+ 
+ router.get('/getData/:token',user.getData);
 module.exports = router;
 
 
