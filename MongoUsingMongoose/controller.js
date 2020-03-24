@@ -1,6 +1,8 @@
 const User = require('./userModel.js');
 const sendEmail = require('./sendEmail');
+const jwt = require('jsonwebtoken');
 const { check, validationResult } = require('express-validator');
+
 // Create and Save a new User
 exports.create = (req, res) => {
   // Create a User
@@ -152,18 +154,20 @@ exports.updatePassword = (req,res) =>
 }
 
 exports.checkUser = (req,res) =>{
-    console.log(req.params.email);
-  User.findOne({email :req.params.email})
+  User.findOne({email :req.body.email})
   .then(user => {
       if(!user) {
           return res.status(404).send({
               message: "User not found with email " + req.params.email
           });            
       }  
-      if((req.body.name == user.name) && (req.body.password == user.password))
+      if((req.body.email == user.email) && (req.body.password == user.password))
       {
+          const username = {name : user.name};
+          const accessToken = jwt.sign(username,process.env.ACCESSTOKEN,{expiresIn : '40s'});
           return res.status(200).send({
-              message : "User is valid"
+              message : "User is valid",
+              Token : accessToken
           });
       }
       else{
@@ -181,4 +185,21 @@ exports.checkUser = (req,res) =>{
           message: "Error retrieving user with email " + req.params.email
       });
   });
+}
+
+exports.autheticateToken = (req,res,next) =>{
+    const authHeader = req.headers['authorization'];
+    const token =authHeader && authHeader.split(' ')[1];
+    if(token == null) return res.status(401).send({
+        message : "Token not provided"
+    });
+    console.log(token);
+    jwt.verify(token,process.env.ACCESSTOKEN,(err,user) =>
+    {
+        if(err) return res.status(403).send({
+            message: "Not a valid token" 
+        });
+        req.user =user;
+        next();
+    })
 }
