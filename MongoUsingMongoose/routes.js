@@ -17,9 +17,9 @@ const { check, validationResult } = require('express-validator');
 //Add user in the Database
 router.post('/user',[
 	check('email').isEmail()
-	],/*validate(loginValidation),*/user.create);
+	],user.create);
 //check username and password
-router.put('/user/checkuser/:email',user.checkUser);
+router.put('/user/login/:email',user.checkUser);
 
  // Retrieve all user
  router.get('/user', user.findAll);
