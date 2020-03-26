@@ -1,7 +1,7 @@
-const User = require('./userModel.js');
-const sendEmail = require('./sendEmail');
-const jwt = require('jsonwebtoken');
+const User = require('../databaseSchema/userModel.js');
+const sendEmail = require('../helperClasses/sendEmail');
 const { check, validationResult } = require('express-validator');
+const authObj = require('../helperClasses/authentication');
 
 // Create and Save a new User
 exports.create = (req, res) => {
@@ -158,13 +158,12 @@ exports.checkUser = (req,res) =>{
   .then(user => {
       if(!user) {
           return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with email " + req.body.email
           });            
       }  
       if((req.body.email == user.email) && (req.body.password == user.password))
       {
-          const username = {name : user.name};
-          const accessToken = jwt.sign(username,process.env.ACCESSTOKEN,{expiresIn : '40s'});
+          const accessToken = authObj.createToken(req.body.email);
           return res.status(200).send({
               message : "User is valid",
               Token : accessToken
@@ -178,28 +177,11 @@ exports.checkUser = (req,res) =>{
   }).catch(err => {
       if(err.kind === 'ObjectId') {
           return res.status(404).send({
-              message: "User not found with email " + req.params.email
+              message: "User not found with email " + req.body.email
           });                
       }
       return res.status(500).send({
-          message: "Error retrieving user with email " + req.params.email
+          message: "Error retrieving user with email " + req.body.email
       });
   });
-}
-
-exports.autheticateToken = (req,res,next) =>{
-    const authHeader = req.headers['authorization'];
-    const token =authHeader && authHeader.split(' ')[1];
-    if(token == null) return res.status(401).send({
-        message : "Token not provided"
-    });
-    console.log(token);
-    jwt.verify(token,process.env.ACCESSTOKEN,(err,user) =>
-    {
-        if(err) return res.status(403).send({
-            message: "Not a valid token" 
-        });
-        req.user =user;
-        next();
-    })
 }

@@ -1,6 +1,8 @@
 //const express = require('express');
 nodeMailer = require('nodemailer');
-
+//Email id and Password of the mail sender !!
+const userEmail = process.env.EMAIL;
+const pass = process.env.EPASS;
 //function to send the email
 function emailData(mail_Obj) {
   let transporter = nodeMailer.createTransport({
@@ -9,8 +11,8 @@ function emailData(mail_Obj) {
     secure: true,
     auth: {
       //assigning the email id and password of the sender
-        user: 'vitkarmanish21@gmail.com',
-        pass: 'zuykdecyecslslgu'
+        user: userEmail,
+        pass: pass
     }
   });
 
