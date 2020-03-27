@@ -1,7 +1,7 @@
-const User = require('./userModel.js');
-const userClass =require('./userDetails.js');
+const User = require('../model//userModel.js');
+const userClass =require('../class/userDetails.js');
 const { check, validationResult } = require('express-validator');
-const mailSender = require('./mailApi');
+const mailSender = require('../email/mailApi');
 const jwt = require('jsonwebtoken');
 exports.create = (req, res) => {
 const errors = validationResult(req);
@@ -208,7 +208,7 @@ exports.login = (req, res) => {
       if((req.body.email == user.email) && (req.body.password == user.password))
       {
 		  var options = {
-			'expiresIn': '1s'
+			'expiresIn': '1000000'
 		};
 		 const token = jwt.sign({
 			  email : user.email
@@ -245,5 +245,3 @@ console.log(decoded.header);
 console.log(decoded.payload.email)
   res.json({token : req.params.token})
 };
-
-

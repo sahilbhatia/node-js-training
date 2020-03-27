@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const user = require('./controller');
+const user = require('../controller/controller.js');
+const token = require('../tokenValidation/tokenValidation.js');
 const { check } = require('express-validator');
 
 router.post('/user',[
@@ -8,19 +9,18 @@ router.post('/user',[
 	check('mobile_no').isLength({ min: 10 },
 	)
 	],user.create);
-
-router.get('/user', user.findAll);
+router.get('/user',token.autheticateToken,user.findAll);
 
  router.get('/user/:email',[
 	check('email').isEmail()
-	], user.findOne);
+	], token.autheticateToken,user.findOne);
  
  router.put('/user/:oldemail',[
 	check('oldemail').isEmail(),
 	check('email').isEmail(),
 	check('mobile_no').isLength({ min: 10 },
 	)
-	],user.update);
+	],token.autheticateToken,user.update);
 	
  router.put('/setUser/:oldemail',[
 	check('oldemail').isEmail(),
@@ -30,7 +30,8 @@ router.get('/user', user.findAll);
  
  router.delete('/user/:email', [
 	check('email').isEmail()
-	],user.delete);
+	],token.autheticateToken,user.delete);
+ 
  
   router.put('/login/:email',[
 	check('email').isEmail()
@@ -38,10 +39,10 @@ router.get('/user', user.findAll);
  
  router.delete('/user/:email', [
 	check('email').isEmail()
-	],user.delete);
+	],token.autheticateToken,user.delete);
+ 
  
  router.get('/getData/:token',user.getData);
 module.exports = router;
-
 
 
