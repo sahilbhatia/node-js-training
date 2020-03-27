@@ -3,6 +3,9 @@ const bodyParser = require('body-parser');
 
 // create express app
 const app = express();
+var http = require('http');
+var httpServer = http.createServer(app);
+
 
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -25,6 +28,8 @@ app.get('/', (req, res) => {
 db.connect();
 // listen for requests
 
-app.listen(3004, () => {
-  console.log("Server is listening on port 3004");
-});
+  httpServer.listen(3004,function(err)
+  {
+    if(err) console.log(err);
+    console.log("Server running on port 3004")
+  });
