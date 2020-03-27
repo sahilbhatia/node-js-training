@@ -85,7 +85,7 @@ exports.update = (req, res) => {
       name : req.body.name,
       email : req.body.email,
       location :req.body.location
-  }, {new: true})
+  })
   .then(user => {
       if(!user) {
           return res.status(404).send({
@@ -107,7 +107,7 @@ exports.update = (req, res) => {
 
 // Delete a user with the specified email in the request
 exports.delete = (req, res) => {
-  User.findOneAndDelete(req.params.email)
+  User.findOneAndDelete({email :req.params.email})
   .then(user => {
       if(!user) {
           return res.status(404).send({
