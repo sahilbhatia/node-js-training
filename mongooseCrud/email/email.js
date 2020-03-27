@@ -6,7 +6,7 @@ exports.mailSend = (mailObj)=>{
 		service  : 'gmail',
 		auth :{
 			user :'jitendrasbunde@gmail.com',
-			pass :'************'
+			pass :'gawgialpaiqhongo'
 		} 
 });
 

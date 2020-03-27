@@ -9,6 +9,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mongoose": "^5.9.5"
+    "express-validation": "^3.0.2",
+    "express-validator": "^6.4.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.5",
+    "nodemailer": "^6.4.6"
   }
 }
