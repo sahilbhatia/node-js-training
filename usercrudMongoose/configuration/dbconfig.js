@@ -1,18 +1,20 @@
+
+const url = process.env.URL;
+const port = process.env.MONGOPORT;
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
-let username = process.env.username;
-let password = process.env.password;
-let db = process.env.db;
-let connection = mongoose.connect(`mongodb://localhost:27017/${db}?authSource=admin`, {
-  user: username,
-  pass: password,
-  useNewUrlParser: true
-}).then(() => {
-  console.log("Successfully connected to database");
-}).catch(err => {
-  console.log('error in coonection   :', err);
-  process.exit();
-})
-module.exports = {
-  connection
+let urlmapping = `mongodb://${url}:${port}`
+
+function connect(callback) {
+  // Connecting to the database
+  mongoose.connect(urlmapping, {
+    useNewUrlParser: true
+  }).then(() => {
+    console.log("Successfully connected to the database");
+  }).catch(err => {
+    console.log('Could not connect to the database. Exiting now...', err);
+    process.exit();
+  });
+  callback();
 }
+module.exports = { connect };

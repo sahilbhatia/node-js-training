@@ -12,7 +12,8 @@ const userValidation = {
 const updateValidation = {
   body: Joi.object({
     name: Joi.string().regex(/^[a-zA-Z]{3,30}$/),
-    mobile: Joi.string().regex(/^[6-9][0-9]{9}$/)
+    mobile: Joi.string().regex(/^[6-9][0-9]{9}$/),
+    token: Joi.string()
   })
 };
 

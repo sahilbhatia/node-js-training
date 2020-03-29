@@ -14,7 +14,7 @@ create = (req, res) => {
       email.helpmail(req.body.email);
     }).catch(err => {
       res.status(500).send({
-        message: err.message || "Some error occurred while creating the Note."
+        message: err.message || "Internal server error"
       });
     });
 };
@@ -36,18 +36,18 @@ findOne = (req, res) => {
 
       if (!user) {
         return res.status(404).send({
-          message: "Note not found with emailid " + req.params.email
+          message: "User not found with emailid " + req.params.email
         });
       }
       res.send(user);
     }).catch(err => {
       if (err.kind === 'ObjectId') {
         return res.status(404).send({
-          message: "Note not found with email " + req.params.email
+          message: "User not found with email " + req.params.email
         });
       }
       return res.status(500).send({
-        message: "Error in retrieving such email" + req.params.email
+        message: "internal server error" + req.params.email
       });
     });
 };
@@ -77,35 +77,34 @@ update = (req, res) => {
         });
       }
       return res.status(500).send({
-        message: "Error  occurred while updating note with email" + req.params.email
+        message: "Internal server error "
       });
     });
 };
 
 deleteByEmail = (req, res) => {
-  UserDetails.findOneAndDelete(req.params.email)
+  UserDetails.findOneAndRemove(req.params.email)
     .then(user => {
       if (!user) {
         return res.status(404).send({
-          message: "Note not found with the email " + req.params.email
+          message: "User not found with the email " + req.params.email
         });
       }
       res.send({ message: "user deleted successfully!" });
     }).catch(err => {
+      console.log(err);
       if (err.kind === 'ObjectId' || err.name === 'NotFound') {
         return res.status(404).send({
           message: "User not found with emailid " + req.params.email
         });
       }
       return res.status(500).send({
-        message: "Could not delete the Userinfo with email :" + req.params.email
+        message: "Internal server error"
       });
     });
 };
 
 setPassword = (req, res) => {
-  console.log(req.body.password);
-
   UserDetails.updateOne({ email: req.params.email }, { $set: { password: req.body.password } }, { useFindAndModify: true }).then(user => {
 
     if (!user) {
@@ -125,7 +124,7 @@ setPassword = (req, res) => {
     }
     else {
       return res.status(500).send({
-        message: "Error occurs while updatind the password"
+        message: "Internal server error"
       });
     }
   })
@@ -136,7 +135,6 @@ login = (req, res, next) => {
   UserDetails.findOne({ email: req.body.email }).then(userinfo => {
     if (userinfo) {
       if ((userinfo.email == req.body.email) && (userinfo.password == req.body.password)) {
-        //res.json("Successful login with credential");
         next();
       }
       else {
@@ -150,39 +148,6 @@ login = (req, res, next) => {
     }
   })
 }
-
-const jwt = require('jsonwebtoken');
-jwtAuth = (req, res) => {
-  const user = req.body;
-  jwt.sign(user, 'secretKey', { expiresIn: 60 }, (err, token) => {
-    res.json({
-      token
-    });
-  })
-}
-
-verification = (req, res, next) => {
-  const token = req.body.token;
-  // console.log(token);
-  if (typeof token !== 'undefined') {
-    next();
-  }
-  else {
-    res.status(403).send({ error: "No token given" });
-  }
-}
-
-checkToken = (req, res) => {
-  jwt.verify(req.body.token, 'secretKey', (err, Data) => {
-    if (err)
-      res.status(403).send({
-        msg: "forbidden due to wrong token or expired"
-      });
-    else {
-      res.json("Login successfully");
-    }
-  })
-}
 module.exports = {
   create,
   findAll,
@@ -191,7 +156,4 @@ module.exports = {
   deleteByEmail,
   setPassword,
   login,
-  jwtAuth,
-  verification,
-  checkToken
 };
