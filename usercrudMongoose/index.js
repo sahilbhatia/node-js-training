@@ -6,7 +6,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json());
 const dbconfig = require('./configuration/dbconfig');
 const route = require('./app/routes/userRoutes');
-app.use('/main', route);
+app.use('/', route);
 dbconfig.connection;
 portNo = process.env.PORTNO;
 dbconfig.connect(function (error) {
