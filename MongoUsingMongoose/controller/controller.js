@@ -165,8 +165,8 @@ exports.checkUser = (req,res) =>{
       {
           const accessToken = authObj.createToken(req.body.email);
           return res.status(200).send({
-              message : "User is valid",
-              Token : accessToken
+              message : "Login Success",
+              token : accessToken
           });
       }
       else{

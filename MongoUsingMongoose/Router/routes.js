@@ -2,17 +2,18 @@ const express = require('express');
 const router = express.Router();
 const user = require('../controller/controller');
 const authObj = require('../helperClasses/authentication');
-//const { validate, ValidationError, Joi } = require('express-validation');
 const { check, validationResult } = require('express-validator');
+const cors = require('cors');
+router.use(cors());
 //Add user in the Database
 router.post('/user',[
 	check('email').isEmail()
 	],authObj.validateToken,user.create);
 //check username and password
-router.post('/user/login/',user.checkUser);
+router.post('/login/',user.checkUser);
 
  // Retrieve all user
- router.get('/user',authObj.validateToken,user.findAll);
+ router.get('/users',authObj.validateToken,user.findAll);
 
  // Retrieve a single User with userEmail
  router.get('/user/:email',authObj.validateToken, user.findOne);
