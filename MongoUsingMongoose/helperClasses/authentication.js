@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
   function createToken(emailid)
   {
     const useremail = {email : emailid};
-    let token = jwt.sign(useremail,process.env.SECRETTOKEN,{expiresIn : process.env.EXPIRYTIME}); 
+    let token = jwt.sign(useremail,process.env.SECRETTOKEN,{expiresIn : process.env.TOKENEXPIRYTIME}); 
     return token;
   }
   
