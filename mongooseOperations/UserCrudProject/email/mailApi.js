@@ -1,5 +1,5 @@
 const nodeMailer = require('nodemailer');
-const file= require('./controller.js');
+const file= require('../controller/controller.js');
 
 function senderFunction(mailOptions){
 
