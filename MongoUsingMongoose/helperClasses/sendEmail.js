@@ -20,7 +20,7 @@ function emailData(mail_Obj) {
     //composing a new mail 
     to: mail_Obj.email,
       subject: 'User has been created',
-      text: 'Your account has been created ,Please set your password by visiting to following url URl :http://localhost:8443/user/setpassword'
+      text: 'Your account has been created ,Please set your password'
   };
   
   //sending the mail and getting acknowlegment !!
