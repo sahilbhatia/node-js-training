@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken');
 jwtAuth = (req, res) => {
+
   const user = req.body;
-  jwt.sign(user, 'secretKey', { expiresIn: 300 }, (err, token) => {
+  console.log(user);
+  jwt.sign(user, 'secretKey', { expiresIn: 1500 }, (err, token) => {
     res.json({
       token
     });

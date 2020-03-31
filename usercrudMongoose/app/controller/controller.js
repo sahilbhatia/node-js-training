@@ -6,7 +6,7 @@ create = (req, res) => {
     id: req.body.id,
     name: req.body.name,
     email: req.body.email,
-    mobileNo: req.body.mobileNo
+    mobile: req.body.mobile
   });
   user.save()
     .then(data => {
@@ -59,7 +59,7 @@ update = (req, res) => {
     });
   }
   UserDetails.findOneAndUpdate({ email: req.params.email }, {
-    mobileNo: req.body.mobile,
+    mobile: req.body.mobile,
     name: req.body.name
   })
     .then(user => {
@@ -69,7 +69,7 @@ update = (req, res) => {
         });
       }
       console.log(req.params.email);
-      res.send(user);
+      res.send({messsage :"user updated successfully"});
     }).catch(err => {
       if (err.kind === 'ObjectId') {
         return res.status(404).send({
@@ -83,7 +83,7 @@ update = (req, res) => {
 };
 
 deleteByEmail = (req, res) => {
-  UserDetails.findOneAndRemove(req.params.email)
+  UserDetails.findOneAndDelete({email :req.params.email})
     .then(user => {
       if (!user) {
         return res.status(404).send({
