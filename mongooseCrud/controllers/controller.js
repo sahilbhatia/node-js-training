@@ -1,7 +1,8 @@
-const User = require('/home/jitendra/Node-Js_Training/git_training/node-js-training/mongooseCrud/dbConnection/model/model');
-const email = require('/home/jitendra/Node-Js_Training/git_training/node-js-training/mongooseCrud/email/email')
+const User = require('../dbConnection/model/model');
+const email = require('../email/email')
 const jwt=require('jsonwebtoken');
 const secretkey="jitu";
+const TOKENEXPIRYTIME =process.env.TOKENEXPIRYTIME
 //const validate = valid.validate;
 //const validateError = valid.ValidationError
 
@@ -13,20 +14,20 @@ exports.create = (req, res) => {
 			message: "User email can not be empty"
 		});
   }
-
   // Create a User
   const user = new User({
     name: req.body.name,
     email: req.body.email,
-    adharNo:req.body.adhar,
-    panNo:req.body.pan,
-    mobileNo:req.body.mobile
-  });
-
+    adharNo:req.body.adharNo,
+    panNo:req.body.panNo,
+    mobileNo:req.body.mobileNo
+	});
+	
+	console.log('hi i am in create mode 2')
 	// Save User in the database
   user.save()
   .then(data => {
-		return
+		return data
   }).catch(err => {
 		res.status(500).send({
 			message: err.message || "Some error occurred while creating the User."
@@ -38,7 +39,6 @@ exports.create = (req, res) => {
 		subject  :'Accout Details',
 		 text :"Name"+req.body.name+" email :"+req.body.email+"    Please Set Password"
 	}
-
 	email.mailSend(obj);
 	res.json({'status':'Created'})
 };
@@ -55,7 +55,8 @@ exports.findAll = (req, res) => {
 };
 
 exports.delete = (req, res) => {
-  User.findOneAndRemove(req.params.email)
+	console.log(req.params.email)
+  User.findOneAndRemove({email:req.params.email})
   .then(user => {
 		if(!user) {
 			return res.status(404).send({
@@ -78,18 +79,19 @@ exports.delete = (req, res) => {
 exports.update = (req, res) => {
 	// Validate Request
 	
-  if(!req.body.email) {
+  if(!req.params.email.match(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/)) {
 		return res.status(400).send({
-			message: "User Email can not be empty"
+			message: "User Email can not correct"
 		});
   }
 
-  User.findOneAndUpdate(req.params.email, {
-    name: req.body.name,
-    adharNo:req.body.adhar,
-    panNo:req.body.pan,
-    mobileNo:req.body.mobile
-  })
+	User.findOneAndUpdate({email:req.params.email},
+		{
+			name:req.body.name,
+			adharNo:req.body.adharNo,
+			mobileNo:req.body.mobileNo,
+			panNo:req.body.panNo
+		})
   .then(user => {
 		if(!user) {
 			return res.status(404).send({
@@ -104,40 +106,33 @@ exports.update = (req, res) => {
 			});                
 		}
 		return res.status(500).send({
-			message: "Error updating User with email " + req.params.email
+			message: "Error updating User with email " + err
 		});
   });
 };
 
 exports.set = (req, res) => {
 	// Validate Request
-	
-  if(!req.body.email) {
-		return res.status(400).send({
-			message: "User Email can not be empty"
-		});
-  }
-
-  User.findOneAndUpdate(req.body.email, {
-    password:req.body.password
-  }, {new: true})
-  .then(user => {
-		if(!user) {
-			return res.status(404).send({
-				message: "User not found with email " + req.params.email
-			});
-		}
-		res.send(user);
-  }).catch(err => {
-		if(err.kind === 'ObjectId') {
-			return res.status(404).send({
-				message: " not found with email " + req.params.email
-			});                
-		}
-		return res.status(500).send({
-			message: "Error updating User with email " + req.params.email
-		});
-  });
+  User.findOneAndUpdate({email : req.params.email}, {
+    password : req.body.password
+    }, {new: true})
+    .then(user => {
+    if(!user) {
+        return res.status(404).send({
+            message: "User not found with email " + req.params.email
+        });
+    }
+    res.send(user);
+    }).catch(err => {
+    if(err.kind === 'ObjectId') {
+        return res.status(404).send({
+            message: "User not found with email " + req.params.email
+        });                
+    }
+    return res.status(500).send({
+        message: "Error updating user with email " + req.params.email
+     });
+    });
 };
 
 
@@ -145,19 +140,18 @@ exports.findOne = (req, res) => {
   User.find({$and:[{email:req.body.email},{pass:req.body.pass}]})
   .then(users => {
 		if(users.length!=0){
-			jwt.sign((req.body),secretkey,{expiresIn:'40s'},(err,token)=>{
+			jwt.sign((req.body),secretkey,{expiresIn:TOKENEXPIRYTIME},(err,token)=>{
 				if(err)
 				res.sendStatus(403);
 				else
-				res.json({"token":token});
+				res.json({"message":"Login Successful","token":token});
 				 });
 		}
 		else
-			res.send({'url':'Not Found'});	
+			res.send(404);	
   }).catch(err => {
 		res.status(500).send({
 			"status":"Login Failed"
 		});
 	});
 };
-
