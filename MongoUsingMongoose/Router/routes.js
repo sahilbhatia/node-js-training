@@ -10,7 +10,7 @@ router.post('/user',[
 	check('email').isEmail()
 	],authObj.validateToken,user.create);
 //check username and password
-router.post('/users/login/',user.checkUser);
+router.post('/login/',user.checkUser);
 
  // Retrieve all user
  router.get('/users',authObj.validateToken,user.findAll);
