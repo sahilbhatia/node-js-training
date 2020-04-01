@@ -2,7 +2,7 @@ const express = require('express');
 const checkValid = require('../validator/validation');
 const router = express.Router();
 const controller = require('../controller/controller');
-const authentication = require('../Authentication/auth');
+const authentication = require('../Authentication/authenticate');
 router.post('/user', checkValid.validate(checkValid.userValidation),authentication.verification,authentication.checkToken, controller.create);
 router.get('/users', authentication.verification, authentication.checkToken, controller.findAll);
 router.get('/user/:email', authentication.verification, authentication.checkToken, controller.findOne);
