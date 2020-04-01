@@ -4,7 +4,7 @@ nodeMailer = require('nodemailer');
 const userEmail = process.env.EMAIL;
 const pass = process.env.EPASS;
 //function to send the email
-function emailData(mail_Obj) {
+function emailData(mailObj) {
   let transporter = nodeMailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -18,9 +18,14 @@ function emailData(mail_Obj) {
 
   let mailOptions = {
     //composing a new mail 
-    to: mail_Obj.email,
+    to: mailObj.email,
       subject: 'User has been created',
-      text: 'Your account has been created ,Please set your password'
+      text: 'Your account has been created with below details :'+
+      '{ name :'+mailObj.name+','+
+        'email :'+mailObj.email+','+
+        'location :'+mailObj.location+','+
+      '}' +
+        ' Please set your password'
   };
   
   //sending the mail and getting acknowlegment !!
