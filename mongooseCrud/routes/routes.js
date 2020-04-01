@@ -1,6 +1,5 @@
   const express = require('express');
   const router = express.Router();
-  const valid = require('/home/jitendra/Node-Js_Training/git_training/node-js-training/mongooseCrud/validation/validation')
   const bodyParser = require('body-parser');
   router.use(bodyParser.json());
   const { body, validationResult } = require('express-validator')
@@ -39,17 +38,12 @@ const verifyUserToken=(req,res,next)=>{
 
   router.get('/users',verifyUserToken,user.findAll);
 
-  router.post('/add',verifyUserToken,user.create);
+  router.post('/user',verifyUserToken,user.create);
 
   router.delete('/delete/:email',verifyUserToken,user.delete)
 
-  router.put('/update/:email',verifyUserToken,user.update)
+  router.put('/user/:email',verifyUserToken,user.update)
 
-  router.use(function(err, req, res, next) {
-    if (err instanceof ValidationError) {
-      return res.status(err.statusCode).json(err)
-    }
-  });
   
 
 module.exports = router;

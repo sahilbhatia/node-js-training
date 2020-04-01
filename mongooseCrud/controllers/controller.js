@@ -137,9 +137,9 @@ exports.set = (req, res) => {
 
 
 exports.findOne = (req, res) => {
-  User.find({$and:[{email:req.body.email},{pass:req.body.pass}]})
+  User.findOne({$and:[{email:req.body.email},{password:req.body.password}]})
   .then(users => {
-		if(users.length!=0){
+		if((req.body.email == users.email) && (req.body.password == users.password)){
 			jwt.sign((req.body),secretkey,{expiresIn:TOKENEXPIRYTIME},(err,token)=>{
 				if(err)
 				res.sendStatus(403);
