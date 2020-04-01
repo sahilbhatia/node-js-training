@@ -6,7 +6,7 @@ exports.mailSend = (mailObj)=>{
 		service  : 'gmail',
 		auth :{
 			user :'jitendrasbunde@gmail.com',
-			pass :'gawgialpaiqhongo'
+			pass :'llqbvdwgocvqwkoz'
 		} 
 });
 
@@ -19,6 +19,3 @@ transport.sendMail(mailObj,function (error,info){
 	}
 );
 }
-
-
-

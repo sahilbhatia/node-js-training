@@ -1,40 +1,51 @@
   const express = require('express');
   const router = express.Router();
-  const valid = require('/home/jitendra/Node-Js_Training/git_training/node-js-training/mongooseCrud/validation/validation')
   const bodyParser = require('body-parser');
   router.use(bodyParser.json());
-  const { validate, ValidationError, Joi } = require('express-validation');
+  const { body, validationResult } = require('express-validator')
 
-
-  const userValidation = {
-    body: Joi.object({
-      name:Joi.string().required(),
-      email: Joi.string().email().required(),
-      adhar: Joi.string().min(10).max(12).pattern(/^\d{12}$/).required(),
-      mobile:Joi.string().min(10).max(10).pattern(/^\d{10}$/).required(),
-      pan:Joi.string().min(10).max(10).pattern(/([A-Z]){5}([0-9]){4}([A-Z]){1}$/).required()
-    }),
+  const jwt=require('jsonwebtoken');
+const secretkey="jitu";
+//verify the token
+const verifyUserToken=(req,res,next)=>{
+  try{
+    var token = req.headers.authorization.split(' ')[1];
+  }catch(ex){
+      res.send(422)
   }
-   const emailValidation = {
-    email: Joi.string().email().required(),
-  }
+    if(token){
+        console.log(token)
+        jwt.verify(token,secretkey,(err,data)=>{
+            if(err){
+              console.log(err);
+            }
+            else{
+                console.log(data);
+                next();
+            }
+        })
+    }else
+    res.send(403);
+}
 
-  const user = require('/home/jitendra/Node-Js_Training/git_training/node-js-training/mongooseCrud/controllers/controller.js');
+  const user = require('../controllers/controller');
 
+  router.put('/set/:email',[body('email').isEmail().normalizeEmail(),
+            body('password').isLength({ min: 5,max: 10}).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)],user.set);
 
-  router.get('/',user.findAll);
+  router.post('/login',[body('email').isEmail(),
+            body('password').isLength({ min: 5,max: 10}).matches(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/)],user.findOne);
 
-  router.post('/add',validate(userValidation),user.create);
+  router.get('/users',verifyUserToken,user.findAll);
 
-  router.delete('/delete/:email',user.delete)
+  router.post('/user',verifyUserToken,user.create);
 
-  router.put('/update/:email',user.update)
+  router.delete('/delete/:email',verifyUserToken,user.delete)
 
-  router.use(function(err, req, res, next) {
-    if (err instanceof ValidationError) {
-      return res.status(err.statusCode).json(err)
-    }
-  });
+  router.put('/user/:email',verifyUserToken,user.update)
+
+  
+
 module.exports = router;
 
 
