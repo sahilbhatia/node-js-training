@@ -6,7 +6,7 @@ create = (req, res) => {
     id: req.body.id,
     name: req.body.name,
     email: req.body.email,
-    mobileNo: req.body.mobileNo
+    mobile: req.body.mobile
   });
   user.save()
     .then(data => {
@@ -14,21 +14,21 @@ create = (req, res) => {
       email.helpmail(req.body.email);
     }).catch(err => {
       res.status(500).send({
-        message: err.message || "Internal server error"
+        message: err.message || "Internal server error ocurred while creating user"
       });
     });
 };
-
+//retriving all the user from db
 findAll = (req, res) => {
   UserDetails.find().then(user => {
     res.send(user);
   }).catch(err => {
     res.status(500).send({
-      message: err.message
+      message: err.message || "Internal server error while feching all users data"
     });
   });
 }
-
+//find a perticular user with email(request param)
 findOne = (req, res) => {
   console.log(req.params.email);
   UserDetails.findOne({ email: req.params.email })
@@ -52,6 +52,7 @@ findOne = (req, res) => {
     });
 };
 
+// finding the user and updating  with request body(mobile and name updation only)
 update = (req, res) => {
   if (!req.params.email) {
     return res.status(400).send({
@@ -59,7 +60,7 @@ update = (req, res) => {
     });
   }
   UserDetails.findOneAndUpdate({ email: req.params.email }, {
-    mobileNo: req.body.mobile,
+    mobile: req.body.mobile,
     name: req.body.name
   })
     .then(user => {
@@ -69,7 +70,7 @@ update = (req, res) => {
         });
       }
       console.log(req.params.email);
-      res.send(user);
+      res.send({ messsage: "user updated successfully" });
     }).catch(err => {
       if (err.kind === 'ObjectId') {
         return res.status(404).send({
@@ -77,13 +78,13 @@ update = (req, res) => {
         });
       }
       return res.status(500).send({
-        message: "Internal server error "
+        message: "Internal server error  wile updating the user"
       });
     });
 };
-
+//deleting the user with email id 
 deleteByEmail = (req, res) => {
-  UserDetails.findOneAndRemove(req.params.email)
+  UserDetails.findOneAndDelete({ email: req.params.email })
     .then(user => {
       if (!user) {
         return res.status(404).send({
@@ -99,11 +100,12 @@ deleteByEmail = (req, res) => {
         });
       }
       return res.status(500).send({
-        message: "Internal server error"
+        message: "Internal server error while deleting the user"
       });
     });
 };
 
+//setting the password of a user
 setPassword = (req, res) => {
   UserDetails.updateOne({ email: req.params.email }, { $set: { password: req.body.password } }, { useFindAndModify: true }).then(user => {
 
@@ -124,12 +126,12 @@ setPassword = (req, res) => {
     }
     else {
       return res.status(500).send({
-        message: "Internal server error"
+        message: "Internal server error while setting password"
       });
     }
   })
 }
-
+//login by email and password in the request body
 login = (req, res, next) => {
 
   UserDetails.findOne({ email: req.body.email }).then(userinfo => {

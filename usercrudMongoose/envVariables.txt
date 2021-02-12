@@ -1,0 +1,17 @@
+env variables
+
+URL
+MONGOPORT 
+DB
+PORTNO  
+KEY 
+TOKENTIME 
+
+Examples of giving values to env. variables
+ 
+URL= 127.0.0.1 
+MONGOPORT=27017
+DB=User1 
+PORTNO=3004  
+KEY=secret
+TOKENTIME=300s 
